@@ -1,0 +1,178 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Student Login</title>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"
+    />
+
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+      }
+
+      .form-container {
+        width: 320px;
+        padding: 30px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(15px);
+        text-align: center;
+        color: white;
+      }
+
+      input {
+        width: 100%;
+        padding: 12px;
+        margin: 10px 0;
+        border-radius: 20px;
+        border: none;
+        outline: none;
+      }
+
+      .password-box {
+        position: relative;
+      }
+
+      .password-box input {
+        padding-right: 40px;
+      }
+
+      .password-box i {
+        position: absolute;
+        right: 15px;
+        top: 50%;
+        transform: translateY(-50%);
+        cursor: pointer;
+        color: #333;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        border-radius: 20px;
+        border: none;
+        background: #00c6ff;
+        color: white;
+        cursor: pointer;
+        margin-top: 10px;
+      }
+
+      .error {
+        color: #ff4d4d;
+        font-size: 14px;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="form-container">
+      <h2>🎓 Student Login</h2>
+
+      <!-- URN -->
+      <input
+        type="text"
+        id="urn"
+        placeholder="Enter College URN"
+        oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+      />
+
+      <!-- PASSWORD -->
+      <div class="password-box">
+        <input type="password" id="password" placeholder="Password" />
+        <i class="fa-solid fa-eye" onclick="togglePassword()"></i>
+      </div>
+
+      <button onclick="login()">Login</button>
+
+      <p id="errorMsg" class="error"></p>
+    </div>
+
+    <script>
+      function togglePassword() {
+        let pass = document.getElementById("password");
+        let icon = document.querySelector(".password-box i");
+
+        if (pass.type === "password") {
+          pass.type = "text";
+          icon.classList.replace("fa-eye", "fa-eye-slash");
+        } else {
+          pass.type = "password";
+          icon.classList.replace("fa-eye-slash", "fa-eye");
+        }
+      }
+
+      async function login() {
+        let urn = document.getElementById("urn").value.trim();
+        let password = document.getElementById("password").value.trim();
+        let error = document.getElementById("errorMsg");
+
+        error.innerText = "";
+
+        // VALIDATION
+        if (urn === "" || password === "") {
+          error.innerText = "Please fill all fields";
+          return;
+        }
+
+        if (!/^[0-9]+$/.test(urn) || parseInt(urn) <= 0) {
+          error.innerText = "Invalid URN";
+          return;
+        }
+
+        try {
+          // API CALL
+          const response = await fetch(
+            "http://localhost:5000/api/student/login",
+            {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                urn: urn,
+                password: password,
+              }),
+            },
+          );
+
+          const data = await response.json();
+
+          // LOGIN FAILED
+          if (!response.ok) {
+            error.innerText = data.message;
+            return;
+          }
+
+          // SAVE STUDENT SESSION
+          localStorage.setItem("loggedInStudent", JSON.stringify(data.student));
+
+          alert("Login Successful ✅");
+
+          // REDIRECT
+          window.location.href = "./dashboard.html";
+        } catch (err) {
+          console.log(err);
+
+          error.innerText = "Cannot connect to server. Is backend running?";
+        }
+      }
+    </script>
+  </body>
+</html>

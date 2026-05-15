@@ -1,0 +1,327 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <style>
+      body {
+        font-family: Arial;
+      }
+
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 30px;
+        background: #1e3c72;
+        color: white;
+      }
+
+      .navbar a {
+        color: white;
+        margin-left: 15px;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .filters {
+        text-align: center;
+        margin: 20px;
+      }
+
+      select {
+        padding: 8px;
+        margin: 5px;
+      }
+
+      .alert {
+        width: 90%;
+        margin: 10px auto;
+        padding: 10px;
+        background: #ffcccc;
+        color: #900;
+        border-radius: 8px;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .bulk-btn {
+        display: block;
+        margin: 10px auto;
+        padding: 10px 15px;
+        background: red;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+
+      table {
+        width: 95%;
+        margin: 20px auto;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: center;
+      }
+
+      th {
+        background: #2a5298;
+        color: white;
+      }
+
+      .pending {
+        color: red;
+        font-weight: bold;
+      }
+
+      .paid {
+        color: green;
+        font-weight: bold;
+      }
+
+      button {
+        padding: 5px 10px;
+        border: none;
+        background: #0072ff;
+        color: white;
+        border-radius: 6px;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <h2>🛠️ Admin Panel</h2>
+      <div>
+        <a href="add_scholarship.html">Add</a>
+        <a href="manage_scholarships.html">Manage</a>
+        <a href="applications.html">Applications</a>
+        <a href="https://grievance-redressal-portal-mu.vercel.app/"
+          >Grievance Portal</a
+        >
+
+        <!-- ✅ LOGOUT BUTTON -->
+        <a onclick="logout()">Logout</a>
+      </div>
+    </div>
+
+    <h2 style="text-align: center">📊 Dashboard</h2>
+
+    <!-- TOTAL -->
+    <h3 style="text-align: center">
+      Total Students Availing Scholarships:
+      <span id="totalCount">0</span>
+    </h3>
+
+    <!-- BULK BUTTON -->
+    <button class="bulk-btn" onclick="notifyAllPending()">
+      🚨 Notify All Pending Students
+    </button>
+
+    <!-- ALERT -->
+    <div id="alertBox"></div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <select id="yearFilter" onchange="filterData()">
+        <option value="">Academic Year</option>
+        <option>1st Year</option>
+        <option>2nd Year</option>
+        <option>3rd Year</option>
+      </select>
+
+      <select id="batchFilter" onchange="filterData()">
+        <option value="">Batch</option>
+        <option>2023-2027</option>
+        <option>2022-2026</option>
+      </select>
+
+      <select id="typeFilter" onchange="filterData()">
+        <option value="">Scholarship Type</option>
+        <option>Government</option>
+        <option>Private</option>
+      </select>
+
+      <select id="nameFilter" onchange="filterData()">
+        <option value="">Scholarship Name</option>
+        <option>National Merit Scholarship</option>
+        <option>Need-Based Grant</option>
+      </select>
+    </div>
+
+    <!-- TABLE -->
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>URN</th>
+          <th>Year</th>
+          <th>Batch</th>
+          <th>Type</th>
+          <th>Scholarship</th>
+          <th>Amount (₹)</th>
+          <th>Fees Paid</th>
+          <th>Status</th>
+          <th>Notify</th>
+        </tr>
+      </thead>
+      <tbody id="studentTable"></tbody>
+    </table>
+
+    <script>
+      let applications = JSON.parse(localStorage.getItem("applications")) || [];
+
+      if (applications.length === 0) {
+        applications = [
+          {
+            name: "Riya Sharma",
+            urn: "2302652",
+            year: "2nd Year",
+            batch: "2023-2027",
+            type: "Government",
+            scholarship: "National Merit Scholarship",
+            amount: "",
+            feesPaid: "No",
+          },
+          {
+            name: "Aman Verma",
+            urn: "2301111",
+            year: "1st Year",
+            batch: "2023-2027",
+            type: "Private",
+            scholarship: "Need-Based Grant",
+            amount: "40000",
+            feesPaid: "Yes",
+          },
+        ];
+      }
+
+      function displayData(data) {
+        let table = document.getElementById("studentTable");
+        let alertBox = document.getElementById("alertBox");
+
+        table.innerHTML = "";
+        alertBox.innerHTML = "";
+
+        document.getElementById("totalCount").innerText = data.length;
+
+        let pendingCount = 0;
+
+        data.forEach((s) => {
+          let status = "";
+          let amountDisplay = s.amount || "Pending";
+
+          if (!s.amount) {
+            status = "⚠️ Amount Not Updated";
+            pendingCount++;
+          } else {
+            status = "✅ Updated";
+          }
+
+          let feesClass = s.feesPaid === "Yes" ? "paid" : "pending";
+
+          let row = `
+            <tr>
+              <td>${s.name}</td>
+              <td>${s.urn}</td>
+              <td>${s.year}</td>
+              <td>${s.batch}</td>
+              <td>${s.type}</td>
+              <td>${s.scholarship}</td>
+              <td>${amountDisplay}</td>
+              <td class="${feesClass}">${s.feesPaid}</td>
+              <td>${status}</td>
+              <td>
+                <button onclick="sendNotification('${s.urn}', '${status}', '${s.feesPaid}')">
+                  🔔
+                </button>
+              </td>
+            </tr>
+          `;
+
+          table.innerHTML += row;
+        });
+
+        if (pendingCount > 0) {
+          alertBox.innerHTML = `
+            <div class="alert">
+              ⚠️ ${pendingCount} student(s) have not updated amount!
+            </div>
+          `;
+        }
+      }
+
+      function filterData() {
+        let year = document.getElementById("yearFilter").value;
+        let batch = document.getElementById("batchFilter").value;
+        let type = document.getElementById("typeFilter").value;
+        let name = document.getElementById("nameFilter").value;
+
+        let filtered = applications.filter((s) => {
+          return (
+            (year === "" || s.year === year) &&
+            (batch === "" || s.batch === batch) &&
+            (type === "" || s.type === type) &&
+            (name === "" || s.scholarship === name)
+          );
+        });
+
+        displayData(filtered);
+      }
+
+      function sendNotification(urn, status, feesPaid) {
+        let messages = [];
+
+        if (status.includes("Amount Not Updated")) {
+          messages.push("⚠️ Please update your scholarship amount");
+        }
+
+        if (feesPaid === "No") {
+          messages.push("💰 Please pay your pending fees");
+        }
+
+        if (messages.length === 0) {
+          alert("No issues ✅");
+          return;
+        }
+
+        let key = "notifications_" + urn;
+        let existing = JSON.parse(localStorage.getItem(key)) || [];
+
+        localStorage.setItem(key, JSON.stringify([...existing, ...messages]));
+
+        alert("Notification sent ✅");
+      }
+
+      function notifyAllPending() {
+        applications.forEach((s) => {
+          if (!s.amount || s.feesPaid === "No") {
+            sendNotification(
+              s.urn,
+              s.amount ? "ok" : "Amount Not Updated",
+              s.feesPaid,
+            );
+          }
+        });
+
+        alert("All pending students notified 🚀");
+      }
+
+      // ✅ LOGOUT FUNCTION
+      function logout() {
+        localStorage.removeItem("adminLoggedIn"); // optional
+        alert("Logged out successfully");
+        window.location.href = "../index.html"; // 🔥 landing page
+      }
+
+      displayData(applications);
+    </script>
+  </body>
+</html>

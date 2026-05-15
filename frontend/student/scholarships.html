@@ -1,0 +1,187 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Scholarships</title>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .title {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      /* SEARCH */
+      .search-box {
+        text-align: center;
+        margin: 20px;
+      }
+
+      .search-box input {
+        width: 300px;
+        padding: 12px;
+        border-radius: 25px;
+        border: none;
+        outline: none;
+      }
+
+      /* FILTERS */
+      .filters {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin: 10px;
+      }
+
+      .filters select {
+        padding: 10px;
+        border-radius: 20px;
+        border: none;
+      }
+
+      /* CARDS */
+      .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+      }
+
+      .card {
+        width: 260px;
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        text-align: center;
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+      }
+
+      button {
+        margin-top: 10px;
+        padding: 10px;
+        border: none;
+        border-radius: 20px;
+        background: #00c6ff;
+        color: white;
+        cursor: pointer;
+      }
+
+      /* TAGS */
+      .tag {
+        display: inline-block;
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        margin-bottom: 10px;
+      }
+
+      .govt {
+        background: #4caf50;
+      }
+
+      .private {
+        background: #ff9800;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h2 class="title">🎓 Available Scholarships</h2>
+
+    <!-- SEARCH -->
+    <div class="search-box">
+      <input
+        type="text"
+        placeholder="🔍 Search scholarships..."
+        onkeyup="filterScholarships()"
+      />
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filters">
+      <select id="categoryFilter" onchange="filterScholarships()">
+        <option value="">Category</option>
+        <option value="govt">Government</option>
+        <option value="private">Private</option>
+      </select>
+
+      <select id="amountFilter" onchange="filterScholarships()">
+        <option value="">Amount</option>
+        <option value="low">Below 50k</option>
+        <option value="high">Above 50k</option>
+      </select>
+    </div>
+
+    <!-- CARDS -->
+    <div class="cards" id="scholarshipList">
+      <!-- GOVT -->
+      <div class="card" data-category="govt" data-amount="high">
+        <span class="tag govt">🏛 Government</span>
+        <h3>National Merit Scholarship</h3>
+        <p>💰 ₹1,00,000</p>
+        <button onclick="apply()">Apply</button>
+      </div>
+
+      <!-- PRIVATE -->
+      <div class="card" data-category="private" data-amount="low">
+        <span class="tag private">🏢 Private</span>
+        <h3>Need-Based Grant</h3>
+        <p>💰 ₹40,000</p>
+        <button onclick="apply()">Apply</button>
+      </div>
+
+      <!-- GOVT -->
+      <div class="card" data-category="govt" data-amount="low">
+        <span class="tag govt">🏛 Government</span>
+        <h3>Academic Excellence Award</h3>
+        <p>💰 ₹30,000</p>
+        <button onclick="apply()">Apply</button>
+      </div>
+    </div>
+
+    <script>
+      function filterScholarships() {
+        let search = document.querySelector("input").value.toLowerCase();
+        let category = document.getElementById("categoryFilter").value;
+        let amount = document.getElementById("amountFilter").value;
+
+        let cards = document.querySelectorAll(".card");
+
+        cards.forEach((card) => {
+          let text = card.innerText.toLowerCase();
+          let c = card.dataset.category;
+          let a = card.dataset.amount;
+
+          let show =
+            text.includes(search) &&
+            (category === "" || category === c) &&
+            (amount === "" || amount === a);
+
+          card.style.display = show ? "block" : "none";
+        });
+      }
+
+      function apply() {
+        window.location.href = "apply.html";
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Apply</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Apply for Scholarship</h2>
+
+      <input type="text" placeholder="Full Name" />
+      <input type="text" placeholder="URN" />
+      <input type="file" />
+
+      <button onclick="submitApp()">Submit</button>
+    </div>
+
+    <script>
+      function submitApp() {
+        alert("Application Submitted!");
+        window.location.href = "status.html";
+      }
+    </script>
+  </body>
+</html>

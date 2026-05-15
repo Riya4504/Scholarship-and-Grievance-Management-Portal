@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Profile</title>
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <style>
+      body {
+        margin: 0;
+        font-family: Arial;
+      }
+
+      /* NAVBAR */
+      .navbar {
+        display: flex;
+        justify-content: space-between;
+        padding: 15px 30px;
+        background: #1e3c72;
+        color: white;
+      }
+
+      .navbar a,
+      .navbar button {
+        margin-left: 15px;
+        color: white;
+        text-decoration: none;
+        background: none;
+        border: none;
+        cursor: pointer;
+        font-size: 16px;
+      }
+
+      .navbar button {
+        background: red;
+        padding: 6px 12px;
+        border-radius: 10px;
+      }
+
+      .form-container {
+        width: 320px;
+        margin: 80px auto;
+        text-align: center;
+      }
+
+      input {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+      }
+
+      input[readonly] {
+        background: #eee;
+        cursor: not-allowed;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- ✅ NAVBAR -->
+    <div class="navbar">
+      <h3>🎓 Student Panel</h3>
+      <div>
+        <a href="dashboard.html">Dashboard</a>
+        <a href="scholarships.html">Scholarships</a>
+        <button onclick="logout()">Logout</button>
+      </div>
+    </div>
+
+    <!-- PROFILE -->
+    <div class="form-container">
+      <h2>👤 Profile</h2>
+
+      <input type="text" id="name" readonly />
+      <input type="text" id="urn" readonly />
+      <input type="email" id="email" placeholder="Enter Email" />
+
+      <button onclick="saveProfile()">Save Changes</button>
+    </div>
+
+    <script>
+      let currentStudent = null;
+
+      window.onload = function () {
+        let student = localStorage.getItem("loggedInStudent");
+
+        if (!student) {
+          alert("Please login first!");
+          window.location.href = "login.html";
+          return;
+        }
+
+        currentStudent = JSON.parse(student);
+
+        document.getElementById("name").value = currentStudent.name;
+        document.getElementById("urn").value = currentStudent.urn;
+
+        let saved = JSON.parse(
+          localStorage.getItem("profile_" + currentStudent.urn),
+        );
+
+        if (saved) {
+          document.getElementById("email").value = saved.email || "";
+        }
+      };
+
+      function saveProfile() {
+        let email = document.getElementById("email").value;
+
+        if (email === "") {
+          alert("Please enter email");
+          return;
+        }
+
+        let profileData = {
+          email: email,
+        };
+
+        localStorage.setItem(
+          "profile_" + currentStudent.urn,
+          JSON.stringify(profileData),
+        );
+
+        alert("Profile Updated Successfully ✅");
+      }
+
+      // ✅ LOGOUT FUNCTION
+      function logout() {
+        localStorage.removeItem("loggedInStudent");
+        alert("Logged out successfully");
+
+        // 🔥 redirect to landing page
+        window.location.href = "../index.html";
+      }
+    </script>
+  </body>
+</html>

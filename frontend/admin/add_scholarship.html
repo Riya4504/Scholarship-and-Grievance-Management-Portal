@@ -1,0 +1,35 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Add Scholarship</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <div class="form-container">
+      <h2>Add Scholarship</h2>
+
+      <input type="text" placeholder="Scholarship Title" />
+      <textarea
+        placeholder="Description"
+        style="width: 100%; padding: 10px"
+      ></textarea>
+
+      <input type="text" placeholder="Amount" />
+      <input type="date" />
+
+      <select>
+        <option>Category</option>
+        <option>Merit</option>
+        <option>Need</option>
+      </select>
+
+      <button onclick="addScholarship()">Add</button>
+    </div>
+
+    <script>
+      function addScholarship() {
+        alert("Scholarship Added!");
+      }
+    </script>
+  </body>
+</html>

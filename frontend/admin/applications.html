@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Applications</title>
+    <link rel="stylesheet" href="../css/style.css" />
+  </head>
+  <body>
+    <h2 class="title">Student Applications</h2>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Riya Sharma</h3>
+        <p>Applied for: Merit Scholarship</p>
+
+        <button onclick="approve()">Approve</button>
+        <button onclick="reject()">Reject</button>
+      </div>
+
+      <div class="card">
+        <h3>Aman Verma</h3>
+        <p>Applied for: Need-Based Scholarship</p>
+
+        <button onclick="approve()">Approve</button>
+        <button onclick="reject()">Reject</button>
+      </div>
+    </div>
+
+    <script>
+      function approve() {
+        alert("Application Approved");
+      }
+
+      function reject() {
+        alert("Application Rejected");
+      }
+    </script>
+  </body>
+</html>

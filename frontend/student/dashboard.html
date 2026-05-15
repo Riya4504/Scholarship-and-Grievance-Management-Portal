@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Dashboard</title>
+
+    <!-- Google Font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="stylesheet" href="../css/style.css" />
+
+    <style>
+      body {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        font-family: "Poppins", sans-serif;
+      }
+
+      .title {
+        text-align: center;
+        margin-top: 20px;
+      }
+
+      .cards {
+        display: flex;
+        justify-content: center;
+        gap: 20px;
+        padding: 20px;
+        flex-wrap: wrap;
+      }
+
+      .card {
+        width: 220px;
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+        text-align: center;
+        transition: 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-8px);
+      }
+
+      /* FORM */
+      .form-container {
+        width: 350px;
+        margin: 30px auto;
+        padding: 20px;
+        border-radius: 20px;
+        background: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(12px);
+      }
+
+      input,
+      select {
+        width: 100%;
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 10px;
+        border: none;
+        outline: none;
+      }
+
+      button {
+        width: 100%;
+        padding: 10px;
+        border-radius: 20px;
+        border: none;
+        background: #00c6ff;
+        color: white;
+        cursor: pointer;
+      }
+
+      /* TABLE */
+      table {
+        width: 90%;
+        margin: 30px auto;
+        border-collapse: collapse;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      th,
+      td {
+        padding: 12px;
+        text-align: center;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+      }
+
+      th {
+        background: rgba(0, 0, 0, 0.3);
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+    <div class="navbar">
+      <h2>Student Panel</h2>
+      <div>
+        <a href="scholarships.html">Scholarships</a>
+        <a href="profile.html">Profile</a>
+      </div>
+    </div>
+
+    <h2 class="title">Welcome Student</h2>
+
+    <!-- STATS -->
+    <div class="cards">
+      <div class="card">
+        <h3>Applied</h3>
+        <p>3</p>
+      </div>
+      <div class="card">
+        <h3>Approved</h3>
+        <p>1</p>
+      </div>
+      <div class="card">
+        <h3>Pending</h3>
+        <p>2</p>
+      </div>
+    </div>
+
+    <!-- FORM -->
+    <div class="form-container">
+      <h3>💰 Add Received Scholarship</h3>
+
+      <select id="scholarship">
+        <option>Select Scholarship</option>
+        <option>National Merit Scholarship</option>
+        <option>Need-Based Grant</option>
+        <option>Academic Excellence Award</option>
+      </select>
+
+      <input type="number" id="amount" placeholder="Amount Received (₹)" />
+      <input type="text" id="bank" placeholder="Bank Name" />
+      <input type="text" id="account" placeholder="Account Number" />
+      <input type="text" id="ifsc" placeholder="IFSC Code" />
+
+      <button onclick="addRecord()">Add Record</button>
+    </div>
+
+    <!-- TABLE -->
+    <table>
+      <thead>
+        <tr>
+          <th>Scholarship</th>
+          <th>Amount</th>
+          <th>Bank</th>
+          <th>Account No</th>
+          <th>IFSC</th>
+        </tr>
+      </thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+
+    <script>
+      function addRecord() {
+        let scholarship = document.getElementById("scholarship").value;
+        let amount = document.getElementById("amount").value;
+        let bank = document.getElementById("bank").value;
+        let account = document.getElementById("account").value;
+        let ifsc = document.getElementById("ifsc").value;
+
+        if (
+          scholarship === "Select Scholarship" ||
+          amount === "" ||
+          bank === "" ||
+          account === "" ||
+          ifsc === ""
+        ) {
+          alert("Please fill all fields");
+          return;
+        }
+
+        let row = `
+          <tr>
+            <td>${scholarship}</td>
+            <td>₹${amount}</td>
+            <td>${bank}</td>
+            <td>${account}</td>
+            <td>${ifsc}</td>
+          </tr>
+        `;
+
+        document.getElementById("tableBody").innerHTML += row;
+
+        // Clear inputs
+        document.getElementById("amount").value = "";
+        document.getElementById("bank").value = "";
+        document.getElementById("account").value = "";
+        document.getElementById("ifsc").value = "";
+      }
+    </script>
+  </body>
+</html>
