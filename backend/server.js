@@ -1,3 +1,4 @@
+import supabase from "./supabaseClient.js";
 const express = require("express");
 const cors = require("cors");
 
@@ -9,7 +10,7 @@ app.use(express.json());
 // ROUTES
 const studentRoutes = require("./routes/studentRoutes");
 const applicationRoutes = require("./routes/applicationRoutes");
-
+ 
 // API ROUTES
 app.use("/api/student", studentRoutes);
 app.use("/api/apply", applicationRoutes);

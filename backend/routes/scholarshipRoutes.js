@@ -1,13 +1,18 @@
 const express = require("express");
 const router = express.Router();
+const supabase = require("../supabaseClient");
 
-const {
-  getScholarships,
-  addScholarship,
-} = require("../controllers/scholarshipController");
+/*
+GET SCHOLARSHIPS
+*/
+router.get("/", async (req, res) => {
+  const { data, error } = await supabase
+    .from("scholarships")
+    .select("*");
 
-router.get("/", getScholarships);
+  if (error) return res.status(500).json(error);
 
-router.post("/add", addScholarship);
+  res.json(data);
+});
 
 module.exports = router;
